@@ -7,7 +7,13 @@
     {
       "name": "app",
       "request": "launch",
-      "type": "dart"
+      "type": "dart",
+      "toolArgs": [
+        "--dart-define",
+        "API_AUTHORITY=localhost:4007",
+        "--dart-define",
+        "SSL_MODE=dev"
+      ]
     },
     {
       "name": "app (profile mode)",

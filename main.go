@@ -20,9 +20,9 @@ type Model struct {
 	DeletedAt gorm.DeletedAt `json:"deletedAt" gorm:"index"`
 }
 
-type Post struct {
+type Todo struct {
 	Model
-	Name    string `json:"name" binding:"required"`
+	Title   string `json:"title" binding:"required"`
 	Content string `json:"content" binding:"required"`
 }
 
@@ -33,7 +33,7 @@ func setupRouter() *gin.Engine {
 		panic("Database connection error.")
 	}
 
-	db.AutoMigrate(&Post{})
+	db.AutoMigrate(&Todo{})
 
 	r := gin.Default()
 
@@ -41,15 +41,15 @@ func setupRouter() *gin.Engine {
 		c.JSON(http.StatusOK, gin.H{"message": "pong"})
 	})
 
-	r.GET("/posts", func(c *gin.Context) {
-		var posts []Post
+	r.GET("/todos", func(c *gin.Context) {
+		var todos []Todo
 
-		db.Find(&posts)
+		db.Find(&todos)
 
-		c.JSON(http.StatusOK, posts)
+		c.JSON(http.StatusOK, todos)
 	})
 
-	r.GET("/post/:id", func(c *gin.Context) {
+	r.GET("/todo/:id", func(c *gin.Context) {
 		var id, err = strconv.ParseUint(c.Params.ByName("id"), 10, 1)
 
 		if err != nil {
@@ -58,26 +58,26 @@ func setupRouter() *gin.Engine {
 			return
 		}
 
-		var post Post
+		var todo Todo
 
-		var value = db.First(&post, id)
+		var value = db.First(&todo, id)
 
 		c.JSON(http.StatusOK, value)
 	})
 
-	r.POST("/post", func(c *gin.Context) {
+	r.POST("/todo", func(c *gin.Context) {
 
-		var post = Post{}
+		var todo = Todo{}
 
-		if err := c.BindJSON(&post); err != nil {
+		if err := c.BindJSON(&todo); err != nil {
 			c.AbortWithError(http.StatusBadRequest, err)
 
 			return
 		}
 
-		db.Create(&Post{Name: post.Name, Content: post.Content})
+		db.Create(&Todo{Title: todo.Title, Content: todo.Content})
 
-		c.JSON(http.StatusCreated, gin.H{"message": "Post created."})
+		c.JSON(http.StatusCreated, gin.H{"message": "Todo created."})
 	})
 
 	return r
@@ -86,5 +86,5 @@ func setupRouter() *gin.Engine {
 func main() {
 	r := setupRouter()
 
-	r.Run(":8080")
+	r.Run(":4007")
 }

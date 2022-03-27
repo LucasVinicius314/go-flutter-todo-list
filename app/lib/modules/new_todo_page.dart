@@ -12,7 +12,7 @@ class NewTodoPage extends StatefulWidget {
 class _NewTodoPageState extends State<NewTodoPage> {
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
+    return const CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(middle: Text('New todo')),
       child: Text('a'),
     );

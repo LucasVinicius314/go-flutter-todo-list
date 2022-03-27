@@ -18,15 +18,15 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      child: Text('Main'),
       navigationBar: CupertinoNavigationBar(
-        middle: Text('Todo list'),
+        middle: const Text('Todo list'),
         trailing: CupertinoButton(
-          child: Text('New'),
-          padding: EdgeInsets.zero,
           onPressed: _newTodo,
+          child: const Text('New'),
+          padding: EdgeInsets.zero,
         ),
       ),
+      child: const Text('Main'),
     );
   }
 }
