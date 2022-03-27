@@ -126,8 +126,6 @@ class _EditTodoPageState extends State<EditTodoPage> {
     final params = EditTodoPage.params(context);
 
     if (params == null) {
-      // TODO: fix
-
       return;
     }
 
@@ -221,58 +219,66 @@ class _EditTodoPageState extends State<EditTodoPage> {
           slivers: [
             SliverFillRemaining(
               child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        top: 16,
-                        left: 16,
-                        right: 16,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          const Text(
-                            'Title',
-                            style: TextStyle(
-                              color: CupertinoColors.inactiveGray,
-                            ),
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: ConstrainedBox(
+                    constraints:
+                        BoxConstraints.loose(const Size.fromWidth(768)),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            top: 16,
+                            left: 16,
+                            right: 16,
                           ),
-                          const SizedBox.square(dimension: 4),
-                          CupertinoTextField(
-                            placeholder: 'Title',
-                            focusNode: _titleFocusNode,
-                            controller: _titleController,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                        padding: const EdgeInsets.only(
-                          top: 8,
-                          left: 16,
-                          right: 16,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            const Text(
-                              'Content',
-                              style: TextStyle(
-                                color: CupertinoColors.inactiveGray,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              const Text(
+                                'Title',
+                                style: TextStyle(
+                                  color: CupertinoColors.inactiveGray,
+                                ),
                               ),
-                            ),
-                            const SizedBox.square(dimension: 4),
-                            CupertinoTextField(
-                              minLines: 2,
-                              maxLines: 6,
-                              placeholder: 'Content',
-                              focusNode: _contentFocusNode,
-                              controller: _contentController,
-                            ),
-                          ],
-                        )),
-                  ],
+                              const SizedBox.square(dimension: 4),
+                              CupertinoTextField(
+                                placeholder: 'Title',
+                                focusNode: _titleFocusNode,
+                                controller: _titleController,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            top: 8,
+                            left: 16,
+                            right: 16,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              const Text(
+                                'Content',
+                                style: TextStyle(
+                                  color: CupertinoColors.inactiveGray,
+                                ),
+                              ),
+                              const SizedBox.square(dimension: 4),
+                              CupertinoTextField(
+                                minLines: 4,
+                                maxLines: 8,
+                                placeholder: 'Content',
+                                focusNode: _contentFocusNode,
+                                controller: _contentController,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),

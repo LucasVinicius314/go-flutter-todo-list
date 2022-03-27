@@ -45,40 +45,47 @@ class _MainPageState extends State<MainPage> {
       child: SafeArea(
         child: Consumer<AppProvider>(
           builder: (context, value, child) {
-            return FutureBuilder<Iterable<Todo>>(
-              future: value.todosFuture,
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return const ErrorMessageWidget();
-                }
+            return Align(
+              alignment: Alignment.topCenter,
+              child: ConstrainedBox(
+                constraints: BoxConstraints.loose(const Size.fromWidth(768)),
+                child: FutureBuilder<Iterable<Todo>>(
+                  future: value.todosFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return const ErrorMessageWidget();
+                    }
 
-                if (snapshot.connectionState == ConnectionState.done) {
-                  final todos = snapshot.data ?? [];
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      final todos = snapshot.data ?? [];
 
-                  if (todos.isEmpty) {
-                    return const ErrorMessageWidget(
-                      message: 'Your todo list is empty.',
-                    );
-                  }
+                      if (todos.isEmpty) {
+                        return const ErrorMessageWidget(
+                          message: 'Your todo list is empty.',
+                        );
+                      }
 
-                  return ListView.separated(
-                    itemCount: todos.length,
-                    separatorBuilder: (context, index) {
-                      return Container(
-                        height: 1,
-                        color: CupertinoTheme.of(context).barBackgroundColor,
+                      return ListView.separated(
+                        itemCount: todos.length,
+                        separatorBuilder: (context, index) {
+                          return Container(
+                            height: 1,
+                            color:
+                                CupertinoTheme.of(context).barBackgroundColor,
+                          );
+                        },
+                        itemBuilder: (context, index) {
+                          final todo = todos.elementAt(index);
+
+                          return TodoWidget(todo: todo);
+                        },
                       );
-                    },
-                    itemBuilder: (context, index) {
-                      final todo = todos.elementAt(index);
+                    }
 
-                      return TodoWidget(todo: todo);
-                    },
-                  );
-                }
-
-                return const Center(child: CupertinoActivityIndicator());
-              },
+                    return const Center(child: CupertinoActivityIndicator());
+                  },
+                ),
+              ),
             );
           },
         ),
