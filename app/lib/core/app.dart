@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:go_flutter_todo_list/modules/main_page.dart';
-import 'package:go_flutter_todo_list/modules/new_todo_page.dart';
+import 'package:go_flutter_todo_list/modules/edit_todo_page.dart';
 import 'package:go_flutter_todo_list/modules/splash_page.dart';
 import 'package:go_flutter_todo_list/providers/app_provider.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +33,7 @@ class AppWidget extends StatelessWidget {
       routes: {
         SplashPage.route: (context) => const SplashPage(),
         MainPage.route: (context) => const MainPage(),
-        NewTodoPage.route: (context) => const NewTodoPage(),
+        EditTodoPage.route: (context) => const EditTodoPage(),
       },
     );
   }

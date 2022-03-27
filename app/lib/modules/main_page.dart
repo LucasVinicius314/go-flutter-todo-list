@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:go_flutter_todo_list/models/todo.dart';
-import 'package:go_flutter_todo_list/modules/new_todo_page.dart';
+import 'package:go_flutter_todo_list/modules/edit_todo_page.dart';
 import 'package:go_flutter_todo_list/providers/app_provider.dart';
 import 'package:go_flutter_todo_list/widgets/error_message_widget.dart';
 import 'package:go_flutter_todo_list/widgets/todo_widget.dart';
@@ -17,7 +17,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   Future<void> _newTodo() async {
-    await Navigator.of(context).pushNamed(NewTodoPage.route);
+    await Navigator.of(context).pushNamed(EditTodoPage.route);
   }
 
   @override
@@ -54,6 +54,12 @@ class _MainPageState extends State<MainPage> {
 
                 if (snapshot.connectionState == ConnectionState.done) {
                   final todos = snapshot.data ?? [];
+
+                  if (todos.isEmpty) {
+                    return const ErrorMessageWidget(
+                      message: 'Your todo list is empty.',
+                    );
+                  }
 
                   return ListView.separated(
                     itemCount: todos.length,

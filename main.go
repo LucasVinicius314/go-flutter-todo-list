@@ -50,7 +50,7 @@ func setupRouter() *gin.Engine {
 	})
 
 	r.GET("/todo/:id", func(c *gin.Context) {
-		var id, err = strconv.ParseUint(c.Params.ByName("id"), 10, 1)
+		var id, err = strconv.ParseUint(c.Params.ByName("id"), 10, 64)
 
 		if err != nil {
 			c.AbortWithError(http.StatusBadRequest, err)
@@ -80,7 +80,7 @@ func setupRouter() *gin.Engine {
 	})
 
 	r.PUT("/todo/:id", func(c *gin.Context) {
-		var id, err = strconv.ParseUint(c.Params.ByName("id"), 10, 1)
+		var id, err = strconv.ParseUint(c.Params.ByName("id"), 10, 64)
 
 		if err != nil {
 			c.AbortWithError(http.StatusBadRequest, err)

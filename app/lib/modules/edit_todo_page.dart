@@ -3,16 +3,25 @@ import 'package:go_flutter_todo_list/models/todo.dart';
 import 'package:go_flutter_todo_list/providers/app_provider.dart';
 import 'package:provider/provider.dart';
 
-class NewTodoPage extends StatefulWidget {
-  const NewTodoPage({Key? key}) : super(key: key);
+class EditTodoPageParams {
+  final Todo todo;
 
-  static const route = 'new_todo';
-
-  @override
-  State<NewTodoPage> createState() => _NewTodoPageState();
+  EditTodoPageParams({required this.todo});
 }
 
-class _NewTodoPageState extends State<NewTodoPage> {
+class EditTodoPage extends StatefulWidget {
+  const EditTodoPage({Key? key}) : super(key: key);
+
+  static const route = 'edit_todo';
+
+  static EditTodoPageParams? params(BuildContext context) =>
+      ModalRoute.of(context)?.settings.arguments as EditTodoPageParams?;
+
+  @override
+  State<EditTodoPage> createState() => _EditTodoPageState();
+}
+
+class _EditTodoPageState extends State<EditTodoPage> {
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
 
@@ -36,6 +45,19 @@ class _NewTodoPageState extends State<NewTodoPage> {
       setState(() {
         _contentEmpty = _contentController.text.isEmpty;
       });
+    });
+
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      final params = EditTodoPage.params(context);
+
+      if (params == null) {
+        return;
+      }
+
+      final todo = params.todo;
+
+      _titleController.text = todo.title;
+      _contentController.text = todo.content;
     });
   }
 
@@ -100,19 +122,96 @@ class _NewTodoPageState extends State<NewTodoPage> {
     Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
+  Future<void> _edit() async {
+    final params = EditTodoPage.params(context);
+
+    if (params == null) {
+      // TODO: fix
+
+      return;
+    }
+
+    final todo = params.todo;
+
+    final id = todo.id;
+
+    final title = _titleController.text;
+    final content = _contentController.text;
+
+    final error = _validateTitle(title) ?? _validateContent(content);
+
+    if (error != null) {
+      await showCupertinoDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return CupertinoAlertDialog(
+            title: const Text('Warning'),
+            content: Text(error),
+          );
+        },
+      );
+
+      return;
+    }
+
+    final res = await Todo.update(id: id, title: title, content: content);
+
+    await showCupertinoDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: const Text('Success!'),
+          content: Text(res.message),
+        );
+      },
+    );
+
+    final provider = Provider.of<AppProvider>(context, listen: false);
+
+    provider.updateTodos();
+
+    Navigator.of(context).popUntil((route) => route.isFirst);
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: const Text('New todo'),
+        middle: Builder(
+          builder: (context) {
+            final params = EditTodoPage.params(context);
+
+            final create = params == null;
+
+            if (create) {
+              return const Text('New todo');
+            }
+
+            return const Text('Edit todo');
+          },
+        ),
         trailing: Builder(
           builder: (context) {
             final disabled = _titleEmpty || _contentEmpty;
 
+            final params = EditTodoPage.params(context);
+
+            final create = params == null;
+
+            if (create) {
+              return CupertinoButton(
+                padding: EdgeInsets.zero,
+                child: const Text('Create'),
+                onPressed: disabled ? null : _create,
+              );
+            }
+
             return CupertinoButton(
               padding: EdgeInsets.zero,
-              child: const Text('Create'),
-              onPressed: disabled ? null : _create,
+              child: const Text('Save'),
+              onPressed: disabled ? null : _edit,
             );
           },
         ),

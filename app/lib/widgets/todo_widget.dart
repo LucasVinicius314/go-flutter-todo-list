@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:go_flutter_todo_list/models/todo.dart';
+import 'package:go_flutter_todo_list/modules/edit_todo_page.dart';
 import 'package:go_flutter_todo_list/providers/app_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -69,7 +70,12 @@ class _TodoWidgetState extends State<TodoWidget> {
   }
 
   Future<void> _edit() async {
-    // TODO: fix
+    final todo = widget.todo;
+
+    await Navigator.of(context).pushNamed(
+      EditTodoPage.route,
+      arguments: EditTodoPageParams(todo: todo),
+    );
   }
 
   @override
