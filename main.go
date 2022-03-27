@@ -1,4 +1,4 @@
-package gofluttertodolist
+package main
 
 import (
 	"net/http"
@@ -60,13 +60,12 @@ func setupRouter() *gin.Engine {
 
 		var todo Todo
 
-		var value = db.First(&todo, id)
+		db.First(&todo, id)
 
-		c.JSON(http.StatusOK, value)
+		c.JSON(http.StatusOK, todo)
 	})
 
 	r.POST("/todo", func(c *gin.Context) {
-
 		var todo = Todo{}
 
 		if err := c.BindJSON(&todo); err != nil {
@@ -78,6 +77,49 @@ func setupRouter() *gin.Engine {
 		db.Create(&Todo{Title: todo.Title, Content: todo.Content})
 
 		c.JSON(http.StatusCreated, gin.H{"message": "Todo created."})
+	})
+
+	r.PUT("/todo/:id", func(c *gin.Context) {
+		var id, err = strconv.ParseUint(c.Params.ByName("id"), 10, 1)
+
+		if err != nil {
+			c.AbortWithError(http.StatusBadRequest, err)
+
+			return
+		}
+
+		var todo = Todo{}
+
+		if err := c.BindJSON(&todo); err != nil {
+			c.AbortWithError(http.StatusBadRequest, err)
+
+			return
+		}
+
+		var newTodo Todo
+
+		db.First(&newTodo, id)
+
+		newTodo.Title = todo.Title
+		newTodo.Content = todo.Content
+
+		db.Save(&newTodo)
+
+		c.JSON(http.StatusOK, gin.H{"message": "Todo updated."})
+	})
+
+	r.DELETE("/todo/:id", func(c *gin.Context) {
+		var id, err = strconv.ParseUint(c.Params.ByName("id"), 10, 64)
+
+		if err != nil {
+			c.AbortWithError(http.StatusBadRequest, err)
+
+			return
+		}
+
+		db.Delete(&Todo{}, id)
+
+		c.JSON(http.StatusOK, gin.H{"message": "Todo deleted."})
 	})
 
 	return r

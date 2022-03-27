@@ -43,7 +43,47 @@ class Api {
     final req = http.post(
       buildUri(path: path, params: params),
       headers: headers,
-      body: body,
+      body: jsonEncode(body),
+    );
+
+    final res = await req;
+
+    log(res);
+
+    final decoded = jsonDecode(res.body);
+
+    return decoded;
+  }
+
+  static Future put(
+    String path, {
+    Map<String, String>? params,
+    Map<String, String>? body,
+  }) async {
+    final req = http.put(
+      buildUri(path: path, params: params),
+      headers: headers,
+      body: jsonEncode(body),
+    );
+
+    final res = await req;
+
+    log(res);
+
+    final decoded = jsonDecode(res.body);
+
+    return decoded;
+  }
+
+  static Future delete(
+    String path, {
+    Map<String, String>? params,
+    Map<String, String>? body,
+  }) async {
+    final req = http.delete(
+      buildUri(path: path, params: params),
+      headers: headers,
+      body: jsonEncode(body),
     );
 
     final res = await req;
